@@ -1,56 +1,937 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>👾 Personnage — Profil | Sys&Réseaux World</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#0d1117;font-family:'Press Start 2P',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;}
-.back-btn{position:fixed;top:20px;left:20px;background:none;border:2px solid #4affaa;color:#4affaa;font-family:inherit;font-size:10px;padding:10px 18px;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:8px;transition:all .2s;z-index:100;}
-.back-btn:hover{background:#4affaa;color:#000;}
-.page-wrap{background:#0d1117;border:3px solid #4affaa;width:100%;max-width:900px;padding:0;}
-.mh{background:#0a2a1a;border-bottom:2px solid #4affaa;padding:22px 30px;display:flex;justify-content:space-between;align-items:center;}
-.mt{font-size:16px;color:#4affaa;}
-.mb{padding:42px;}
-.ph1{font-size:18px;margin-bottom:22px;color:#fff;}
-.psub{font-size:13px;color:#666;margin-bottom:28px;line-height:2.2;}
-.char-sheet{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start;}
-@media(max-width:600px){.char-sheet{grid-template-columns:1fr;}}
-.char-avatar{width:160px;height:180px;border:2px solid #4affaa;background:#0a1a0a;display:flex;align-items:center;justify-content:center;font-size:80px;flex-shrink:0;}
-.char-row{display:flex;justify-content:space-between;padding:15px 20px;border-bottom:1px solid #0a1a0a;font-size:13px;}
-.char-row:last-child{border:none;}
-.char-key{color:#4affaa;}
-.char-val{color:#ccc;text-align:right;}
-.char-bio{margin-top:24px;font-size:13px;color:#666;line-height:2.3;border-left:2px solid #2a4a2a;padding-left:16px;}
-.neon-title{text-shadow:0 0 10px #4affaa,0 0 20px #4affaa;}
+  :root {
+    --neon-green: #4affaa;
+    --neon-blue: #00f2ff;
+    --dark-bg: #030a05;
+    --card-bg: rgba(10, 26, 13, 0.9);
+    --border-color: #1a3a2a;
+    --grid-color: rgba(74, 255, 170, 0.1);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: var(--dark-bg);
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    opacity: 0;
+    transition: opacity 1s ease-in;
+  }
+
+  body.ready {
+    opacity: 1;
+  }
+
+  /* Animated Cyber Grid Background */
+  .bg-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: center center;
+    transform: perspective(500px) rotateX(60deg) translateY(-200px);
+    transform-origin: top;
+    z-index: 1;
+    animation: gridMove 20s linear infinite;
+  }
+
+  @keyframes gridMove {
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 0 500px;
+    }
+  }
+
+  /* CRT Overlay & Scanline Effect (Smarter) */
+  body::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+      linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    z-index: 200;
+    background-size: 100% 4px, 3px 100%;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .back-btn {
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    font-family: inherit;
+    font-size: 11px;
+    padding: 14px 24px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 300;
+    box-shadow: 0 0 15px rgba(74, 255, 170, 0.3);
+  }
+
+  .back-btn:hover {
+    background: var(--neon-green);
+    color: #000;
+    box-shadow: 0 0 30px var(--neon-green);
+    transform: scale(1.05);
+  }
+
+  .game-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    width: 100%;
+    max-width: 1300px;
+    height: 90vh;
+    position: relative;
+    z-index: 10;
+  }
+
+  @media (max-width: 1000px) {
+    .game-container {
+      grid-template-columns: 1fr;
+      height: auto;
+      overflow-y: auto;
+      padding-top: 100px;
+    }
+
+    body {
+      overflow-y: auto;
+    }
+  }
+
+  /* --- LEFT ASPECT: AVATAR & PEDESTAL --- */
+  .avatar-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px;
+  }
+
+  .pedestal-complex {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%) rotateX(75deg);
+    width: 320px;
+    height: 320px;
+    transform-style: preserve-3d;
+    z-index: 5;
+  }
+
+  .ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 3px solid var(--neon-green);
+    box-shadow: 0 0 20px var(--neon-green);
+    transform: translate(-50%, -50%);
+  }
+
+  .ring-1 {
+    width: 300px;
+    height: 300px;
+    animation: ringRotate1 5s linear infinite;
+  }
+
+  .pedestal-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 240px;
+    height: 240px;
+    background: radial-gradient(circle, var(--neon-green) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0.3;
+    transform: translate(-50%, -50%);
+    animation: pulseGlow 2s infinite ease-in-out, neonFlicker 4s infinite alternate;
+  }
+
+  @keyframes ringRotate1 {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @keyframes pulseGlow {
+
+    0%,
+    100% {
+      opacity: 0.2;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    50% {
+      opacity: 0.5;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  @keyframes neonFlicker {
+
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+      opacity: 1;
+    }
+
+    20%,
+    22%,
+    24%,
+    55% {
+      opacity: 0.8;
+    }
+  }
+
+  /* Light Beam */
+  .light-beam {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    height: 600px;
+    background: linear-gradient(to top, rgba(74, 255, 170, 0.2), transparent);
+    clip-path: polygon(15% 100%, 85% 100%, 100% 0, 0 0);
+    transform-origin: bottom center;
+    pointer-events: none;
+    opacity: 0.6;
+    animation: beamSway 8s infinite ease-in-out;
+  }
+
+  @keyframes beamSway {
+
+    0%,
+    100% {
+      transform: scaleX(1);
+      opacity: 0.4;
+    }
+
+    50% {
+      transform: scaleX(1.2);
+      opacity: 0.6;
+    }
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+    cursor: grab;
+    z-index: 10;
+    transition: transform 0.1s ease-out;
+  }
+
+  .avatar-wrap:active {
+    cursor: grabbing;
+  }
+
+  .cal-btn.reset:hover {
+    border-color: #ff4a4a;
+    color: #ff4a4a;
+  }
+
+  /* Precise Calibration for the volumetric shelf effect */
+  .shelf-3d {
+    position: absolute;
+    transform-style: preserve-3d;
+    pointer-events: none;
+  }
+
+  /* Dynamic sheen for 3D simulation */
+  .avatar-sheen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: soft-light;
+    opacity: 0.6;
+    mask-image: linear-gradient(to bottom, black, black);
+    -webkit-mask-image: url('avatar_ultra.png');
+    mask-image: url('avatar_ultra.png');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  .avatar-img {
+    width: 480px;
+    /* Recalibrated size */
+    max-width: 90%;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.8));
+    pointer-events: none;
+    user-select: none;
+    animation: floatSmooth 6s infinite ease-in-out;
+    /* Calibrated: longer duration, smoother */
+    transform: translateZ(50px);
+    transition: filter 0.3s ease;
+  }
+
+  @keyframes floatSmooth {
+
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-15px) rotate(1deg);
+    }
+
+    /* Calibrated: less movement */
+  }
+
+  /* --- RIGHT ASPECT: STATS & INFO --- */
+  .stats-side {
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    border: 4px solid var(--border-color);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    position: relative;
+    overflow-y: auto;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 0, 0, 0.8);
+    scrollbar-width: thin;
+    scrollbar-color: var(--neon-green) transparent;
+  }
+
+  .stats-header {
+    border-bottom: 3px solid var(--neon-green);
+    padding-bottom: 25px;
+    position: relative;
+  }
+
+  .stats-header::after {
+    content: "SYSTEM_ACCESS_GRANTED";
+    position: absolute;
+    bottom: -15px;
+    right: 0;
+    font-size: 8px;
+    color: var(--neon-green);
+    opacity: 0.5;
+  }
+
+  .char-name {
+    font-size: 28px;
+    color: var(--neon-green);
+    margin-bottom: 12px;
+    text-shadow: 0 0 15px var(--neon-green);
+    letter-spacing: 2px;
+    animation: neonFlicker 5s infinite;
+  }
+
+  .char-class {
+    font-size: 12px;
+    color: #888;
+    letter-spacing: 1px;
+    animation: glitchText 3s infinite;
+  }
+
+  @keyframes glitchText {
+
+    0%,
+    100% {
+      transform: none;
+      opacity: 1;
+    }
+
+    7% {
+      transform: skew(-2deg);
+      opacity: 0.8;
+    }
+
+    8% {
+      transform: none;
+      opacity: 1;
+    }
+
+    9% {
+      transform: skew(3deg);
+      opacity: 0.8;
+    }
+
+    10% {
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  /* RPG Bars with Segments */
+  .stat-block {
+    margin-top: 5px;
+  }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 10px;
+    color: #4affaa;
+    text-transform: uppercase;
+  }
+
+  .bar-outer {
+    width: 100%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid var(--border-color);
+    perspective: 1200px;
+    background: #020508;
+    overflow: hidden;
+    user-select: none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .bar-outer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(0, 0, 0, 0.4) 18px, rgba(0, 0, 0, 0.4) 20px);
+    z-index: 5;
+  }
+
+  .bar-inner {
+    height: 100%;
+    width: 0;
+    /* Animated via JS or CSS */
+    background: linear-gradient(90deg, #1a4a2a, var(--neon-green));
+    box-shadow: 0 0 15px var(--neon-green);
+    transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .bar-inner.blue {
+    background: linear-gradient(90deg, #00424a, var(--neon-blue));
+    box-shadow: 0 0 15px var(--neon-blue);
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
+
+  .stat-item {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .stat-item:hover {
+    border-color: var(--neon-green);
+  }
+
+  .si-key {
+    font-size: 9px;
+    color: #666;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .si-val {
+    font-size: 13px;
+    color: #eee;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Skills Selection */
+  .skills-title {
+    font-size: 13px;
+    color: var(--neon-green);
+    border-left: 5px solid var(--neon-green);
+    padding-left: 15px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 20px;
+  }
+
+  .skill-icon {
+    width: 65px;
+    height: 65px;
+    border: 2px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    background: rgba(0, 0, 0, 0.6);
+    transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: help;
+    position: relative;
+  }
+
+  .skill-icon:hover {
+    border-color: var(--neon-green);
+    background: rgba(74, 255, 170, 0.15);
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 0 15px var(--neon-green);
+  }
+
+  .avatar-wrap:active {
+    cursor: grabbing;
+  }
 </style>
 </head>
-<body>
-<a href="index.html" class="back-btn">← RETOUR</a>
 
-<div class="page-wrap">
-  <div class="mh">
-    <span class="mt neon-title">👾 PERSONNAGE — PROFIL</span>
-  </div>
-  <div class="mb">
-    <div class="ph1">Fiche Personnage</div>
-    <div class="psub">L'aventurier qui parcourt le Sys&amp;Net World.</div>
-    <div class="char-sheet">
-      <div class="char-avatar">🧑‍💻</div>
-      <div style="border:1px solid #2a4a2a;background:#080d08;">
-        <div class="char-row"><span class="char-key">NOM</span><span class="char-val">Ton Prénom Nom</span></div>
-        <div class="char-row"><span class="char-key">CLASSE</span><span class="char-val">Admin Sys &amp; Réseaux</span></div>
-        <div class="char-row"><span class="char-key">NIVEAU</span><span class="char-val">⭐⭐⭐ Lv.3</span></div>
-        <div class="char-row"><span class="char-key">GUILDE</span><span class="char-val">Ton École</span></div>
-        <div class="char-row"><span class="char-key">LOCALISATION</span><span class="char-val">France</span></div>
-        <div class="char-row"><span class="char-key">STATUT</span><span class="char-val" style="color:#4affaa;">● ONLINE</span></div>
+<body>
+  <div id="loading-overlay"
+    style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--dark-bg); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; transition: opacity 0.5s;">
+    <div
+      style="color:var(--neon-green); font-size:12px; font-family:'Press Start 2P'; text-shadow:0 0 10px var(--neon-green);">
+      INITIALISATION...</div>
+    <div
+      style="width:200px; height:4px; background:rgba(74,255,170,0.1); border:1px solid var(--border-color); overflow:hidden;">
+      <div id="loading-bar"
+        style="width:0%; height:100%; background:var(--neon-green); box-shadow:0 0 10px var(--neon-green); transition:width 0.3s;">
       </div>
     </div>
-    <div class="char-bio">Passionné par l'infrastructure réseau. Mon terrain de jeu : le home lab — tester, casser, reconstruire des architectures réseau.</div>
   </div>
-</div>
+
+  <div class="bg-grid"></div>
+
+  <a href="index.html" class="back-btn">← RETOUR</a>
+
+  <div class="game-container">
+
+    <!-- Left Side: Interactive Avatar -->
+    <div class="avatar-stage">
+      <div class="light-beam"></div>
+      <div class="pedestal-complex" id="pedestal">
+        <div class="ring ring-1"></div>
+        <div class="pedestal-core"></div>
+      </div>
+      <div id="three-container" class="avatar-wrap"></div>
+    </div>
+
+    <!-- Right Side: Stats Panel -->
+    <div class="stats-side" id="statsPanel">
+      <div class="stats-header">
+        <h1 class="char-name">Benjamin Leperlier</h1>
+        <div class="char-class">TECH ARCHITECT — 3D INTERACTIVE</div>
+      </div>
+
+      <div class="stat-block">
+        <div class="bar-label"><span>Stabilité du Noyau</span><span>98%</span></div>
+        <div class="bar-outer">
+          <div class="bar-inner" id="barHP"></div>
+        </div>
+      </div>
+
+      <div class="stat-block">
+        <div class="bar-label"><span>Flux de Données</span><span>94%</span></div>
+        <div class="bar-outer">
+          <div class="bar-inner blue" id="barMP"></div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="si-key">MOTEUR</div>
+          <div class="si-val">Three.js WebGL</div>
+        </div>
+        <div class="stat-item">
+          <div class="si-key">RENDU</div>
+          <div class="si-val">Hologramme 3D</div>
+        </div>
+        <div class="stat-item">
+          <div class="si-key">INTERFACE</div>
+          <div class="si-val">Texture Mapping</div>
+        </div>
+        <div class="stat-item">
+          <div class="si-key">STATUT</div>
+          <div class="si-val" style="color:var(--neon-green)">● SYNCHRONIZED</div>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="skills-title">MAÎTRISE TECHNIQUE</h2>
+        <div class="skills-grid">
+          <div class="skill-icon" title="Cisco Networking">🌐</div>
+          <div class="skill-icon" title="Linux Administration">🐧</div>
+          <div class="skill-icon" title="Cyber Security">🛡️</div>
+          <div class="skill-icon" title="Cloud Architecture">☁️</div>
+          <div class="skill-icon" title="WebGL & 3D">💎</div>
+          <div class="skill-icon" title="Creative Engineering">🎨</div>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="skills-title">DIMENSION SUPÉRIEURE</h2>
+        <p class="bio-text">
+          Voici l'avatar 4.0 : une géométrie 3D réelle fusionnée avec ton identité visuelle.
+          Rotation fluide, éclairage volumétrique et profondeur absolue.
+          L'équilibre parfait entre virtuel et réel.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three.js Library & Loaders -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script>
+
+    // --- THREE.JS SCENE SETUP ---
+    const container = document.getElementById('three-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.outputEncoding = THREE.sRGBEncoding; // Better color for PBR
+    container.appendChild(renderer.domElement);
+    camera.position.set(0, 1.8, 7); // Back to Step 1233 view
+
+    // Professional Lighting for GLTF
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(2, 5, 3);
+    scene.add(directionalLight);
+
+    const spotLight = new THREE.SpotLight(0xffffff, 2);
+    spotLight.position.set(0, 10, 2);
+    spotLight.angle = Math.PI / 6;
+    spotLight.penumbra = 0.5;
+    scene.add(spotLight);
+    scene.add(spotLight.target);
+
+    const groundLight = new THREE.PointLight(0x4affaa, 4, 6);
+    groundLight.position.set(0, -1.5, 0);
+    scene.add(groundLight);
+
+    const neonFill = new THREE.PointLight(0x4affaa, 1.5);
+    neonFill.position.set(-3, 2, 2);
+    scene.add(neonFill);
+
+    // Avatar Container
+    const avatarGroup = new THREE.Group();
+    scene.add(avatarGroup);
+
+    // --- GLTF MODEL LOADER ---
+    const loader = new THREE.GLTFLoader();
+
+
+    // --- INDEXED DB PERSISTENCE ---
+    const dbName = "AvatarDB";
+    const storeName = "models";
+
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(dbName, 1);
+        request.onupgradeneeded = () => {
+          request.result.createObjectStore(storeName);
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function saveToDB(data) {
+      const db = await initDB();
+      const tx = db.transaction(storeName, "readwrite");
+      tx.objectStore(storeName).put(data, "current_avatar");
+      return tx.complete;
+    }
+
+    async function loadFromDB() {
+      const db = await initDB();
+      return new Promise((resolve) => {
+        const request = db.transaction(storeName).objectStore(storeName).get("current_avatar");
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    function processFile(file) {
+      statusLine.innerText = 'CHARGEMENT EN COURS...';
+      const reader = new FileReader();
+      reader.onerror = () => statusLine.innerText = 'ERREUR DE LECTURE DISQUE';
+      reader.onload = async (event) => {
+        const contents = event.target.result;
+        try {
+          await saveToDB(contents);
+          console.log("Avatar sauvé dans IndexedDB.");
+        } catch (e) {
+          console.error("Erreur IndexedDB:", e);
+        }
+        loadModel(contents);
+      };
+      reader.readAsArrayBuffer(file);
+    } // Final locked positions & Auto-Calibrated Lights
+    // Final locked positions & Calibrated Lights
+    const finalCal = {
+      "avatarScale": 3.8,
+      "avatarX": 0,
+      "avatarY": 1,
+      "avatarRotY": 3.11,
+      "pedY": 15.5,
+      "pedScale": 0.9,
+      "pedTilt": 73,
+      "groundInt": 7.5,
+      "groundX": 0.05,
+      "groundY": -0.65,
+      "groundZ": -5,
+      "spotInt": 5,
+      "spotX": -2.1,
+      "spotY": 7.1,
+      "spotZ": -1.8,
+      "neonInt": 0,
+      "camZ": 6,
+      "beamW": 295,
+      "beamX": -142,
+      "beamY": 25,
+      "beamOp": 0,
+      "coreX": -1,
+      "coreY": -1
+    };
+
+    function applyFinalCalibration() {
+      avatarGroup.position.set(0, 0, 0);
+      const ped = document.getElementById('pedestal');
+      const beam = document.querySelector('.light-beam');
+      const core = document.querySelector('.pedestal-core');
+
+      const dim = 1.0;
+
+      if (avatarGroup.children.length > 0) {
+        const model = avatarGroup.children[0];
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+
+        const s = finalCal.avatarScale / (size.y / model.scale.y);
+        model.scale.set(s, s, s);
+        model.position.y = -(box.min.y / model.scale.y) * s;
+        model.position.x = finalCal.avatarX;
+        model.rotation.y = finalCal.avatarRotY;
+      }
+
+      avatarGroup.position.y = finalCal.avatarY;
+      camera.position.z = finalCal.camZ;
+
+      if (ped) {
+        ped.style.bottom = finalCal.pedY + '%';
+        ped.style.width = (320 * finalCal.pedScale) + 'px';
+        ped.style.height = (320 * finalCal.pedScale) + 'px';
+        ped.style.transform = `translateX(-50%) rotateX(${finalCal.pedTilt}deg)`;
+      }
+
+      if (core) {
+        core.style.marginLeft = finalCal.coreX + 'px';
+        core.style.marginTop = finalCal.coreY + 'px';
+        core.style.opacity = 0.3;
+      }
+
+      if (groundLight) {
+        groundLight.intensity = finalCal.groundInt * dim;
+        groundLight.position.set(finalCal.groundX, finalCal.groundY, finalCal.groundZ);
+      }
+      if (spotLight) {
+        spotLight.intensity = finalCal.spotInt * dim;
+        spotLight.position.set(finalCal.spotX, finalCal.spotY, finalCal.spotZ);
+        spotLight.target.position.set(0, 1, 0);
+        spotLight.target.updateMatrixWorld();
+      }
+      if (neonFill) neonFill.intensity = finalCal.neonInt * dim;
+
+      if (beam) {
+        beam.style.width = finalCal.beamW + 'px';
+        beam.style.left = `calc(50% + ${finalCal.beamX}px)`;
+        beam.style.bottom = finalCal.beamY + '%';
+        beam.style.opacity = finalCal.beamOp * dim;
+      }
+    }
+
+    let mixer;
+    const clock = new THREE.Clock();
+
+    function loadModel(data) {
+      if (!data) return;
+      const lBar = document.getElementById('loading-bar');
+      if (lBar) lBar.style.width = '30%';
+
+      // Clear previous
+      while (avatarGroup.children.length > 0) { avatarGroup.remove(avatarGroup.children[0]); }
+
+      const onSuccess = (gltf) => {
+        if (lBar) lBar.style.width = '100%';
+        const model = gltf.scene;
+
+        // Setup Animations
+        if (gltf.animations && gltf.animations.length > 0) {
+          mixer = new THREE.AnimationMixer(model);
+          const action = mixer.clipAction(gltf.animations[0]);
+          action.play();
+        }
+
+        avatarGroup.add(model);
+        applyFinalCalibration();
+
+        setTimeout(() => {
+          const overlay = document.getElementById('loading-overlay');
+          if (overlay) overlay.style.opacity = '0';
+          setTimeout(() => {
+            if (overlay) overlay.remove();
+            document.body.classList.add('ready');
+            // Stats animation
+            document.getElementById('barHP').style.width = '98%';
+            document.getElementById('barMP').style.width = '94%';
+          }, 500);
+        }, 300);
+      };
+
+      const onError = (e) => {
+        console.error(e);
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) overlay.innerHTML = '<div style="color:#ff4a4a; font-size:10px;">ERREUR CHARGEMENT 3D</div>';
+      };
+
+      if (typeof data === 'string') {
+        loader.load(data, onSuccess, (xhr) => {
+          if (lBar) lBar.style.width = (xhr.loaded / xhr.total * 60 + 30) + '%';
+        }, onError);
+      } else {
+        loader.parse(data, '', onSuccess, onError);
+      }
+    }
+
+    // --- STARTUP LOGIC ---
+    (async () => {
+      const cached = await loadFromDB();
+      if (cached) {
+        loadModel(cached);
+      } else {
+        loadModel('avatar.glb');
+      }
+    })();
+
+
+    camera.position.set(0, 1.8, 7); // Adjusted view for height
+
+    // --- SMOOTH INTERACTION LOGIC ---
+    let isDragging = false;
+    let prevX = 0;
+    let targetVelocityY = 0.005; // The "goal" speed
+    let currentVelocityY = 0.005; // The "actual" speed (smoothed)
+
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      prevX = e.clientX;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const dx = e.clientX - prevX;
+        targetVelocityY = dx * 0.015; // Higher sensitivity but smoothed later
+        prevX = e.clientX;
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+      if (mixer) mixer.update(delta);
+
+      // SMOTHING: Actual velocity lerps toward target velocity
+      // This removes the "jerky" mouse movements
+      currentVelocityY += (targetVelocityY - currentVelocityY) * 0.1;
+      avatarGroup.rotation.y += currentVelocityY;
+
+      if (!isDragging) {
+        // Natural decay when not interacting
+        targetVelocityY *= 0.96;
+        // Maintain a minimal "idle" rotation
+        if (Math.abs(targetVelocityY) < 0.005) {
+          targetVelocityY = (targetVelocityY > 0 ? 1 : -1) * 0.005;
+        }
+      }
+
+      // Subtle breathing / floating
+      avatarGroup.position.y = finalCal.avatarY + Math.sin(Date.now() * 0.0015) * 0.03;
+
+      renderer.render(scene, camera);
+    }
+
+    // Handle Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    animate();
+
+  </script>
 
 </body>
+
 </html>
