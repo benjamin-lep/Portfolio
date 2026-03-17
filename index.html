@@ -345,90 +345,6 @@
       animation: blink .8s infinite;
       vertical-align: middle;
     }
-
-    .crow {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 20px 0;
-      border-bottom: 1px solid #1a3a2a;
-      font-size: 13px;
-    }
-
-    .ckey {
-      color: #4affaa;
-      min-width: 200px;
-    }
-
-    .cval {
-      color: #ccc;
-    }
-
-    .clinks {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .clink {
-      padding: 16px 26px;
-      border: 2px solid #4affaa;
-      color: #4affaa;
-      text-decoration: none;
-      font-size: 12px;
-      transition: all .2s;
-    }
-
-    .clink:hover {
-      background: #4affaa;
-      color: #000;
-    }
-
-    .char-sheet {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 28px;
-      align-items: start;
-    }
-
-    .char-avatar {
-      width: 160px;
-      height: 180px;
-      border: 2px solid #4affaa;
-      background: #0a1a0a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 80px;
-      flex-shrink: 0;
-    }
-
-    .char-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 15px 20px;
-      border-bottom: 1px solid #0a1a0a;
-      font-size: 13px;
-    }
-
-    .char-key {
-      color: #4affaa;
-    }
-
-    .char-val {
-      color: #ccc;
-      text-align: right;
-    }
-
-    .char-bio {
-      margin-top: 18px;
-      font-size: 13px;
-      color: #666;
-      line-height: 2.3;
-      border-left: 2px solid #2a4a2a;
-      padding-left: 16px;
-    }
   </style>
 </head>
 
@@ -444,132 +360,6 @@
     <div id="hud-hint">CLIQUE SUR UN ÉLÉMENT POUR L'EXPLORER</div>
   </div>
   <div id="tooltip"></div>
-
-  <div id="modal-perso" class="modal-wrap">
-    <div class="modal">
-      <div class="mh"><span class="mt">👾 PERSONNAGE — PROFIL</span><button class="mc" onclick="closeModal('perso')">✕
-          ESC</button></div>
-      <div class="mb">
-        <div class="ph1 w">Fiche Personnage</div>
-        <div class="psub">L'aventurier qui parcourt le Sys&amp;Net World.</div>
-        <div class="char-sheet">
-          <div class="char-avatar">🧑‍💻</div>
-          <div style="border:1px solid #2a4a2a;background:#080d08;">
-            <div class="char-row"><span class="char-key">NOM</span><span class="char-val">Ton Prénom Nom</span></div>
-            <div class="char-row"><span class="char-key">CLASSE</span><span class="char-val">Admin Sys &amp;
-                Réseaux</span></div>
-            <div class="char-row"><span class="char-key">NIVEAU</span><span class="char-val">⭐⭐⭐ Lv.3</span></div>
-            <div class="char-row"><span class="char-key">GUILDE</span><span class="char-val">Ton École</span></div>
-            <div class="char-row"><span class="char-key">LOCALISATION</span><span class="char-val">France</span></div>
-            <div class="char-row" style="border:none;"><span class="char-key">STATUT</span><span class="char-val"
-                style="color:#4affaa;">● ONLINE</span></div>
-          </div>
-        </div>
-        <div class="char-bio">Passionné par l'infrastructure réseau. Mon terrain de jeu : le home lab — tester, casser,
-          reconstruire des architectures réseau.</div>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-foret" class="modal-wrap">
-    <div class="modal">
-      <div class="mh"><span class="mt">🌲 FORÊT — PROJETS</span><button class="mc" onclick="closeModal('foret')">✕
-          ESC</button></div>
-      <div class="mb">
-        <div class="ph1 g">Quêtes accomplies</div>
-        <div class="psub">Chaque arbre planté = un projet construit.</div>
-        <div class="qgrid">
-          <div class="qcard"><span class="qdiff dh">HARD</span>
-            <div class="qname">🗺 Forteresse Réseau</div>
-            <div class="qdesc">Réseau segmenté VLANs, routage inter-VLAN, firewall pfSense.</div>
-            <div class="qtags"><span class="qtag">pfSense</span><span class="qtag">VLANs</span><span
-                class="qtag">Cisco</span><span class="qtag">Wireshark</span></div>
-            <div class="qxp">+ 800 XP ★★★</div>
-          </div>
-          <div class="qcard"><span class="qdiff dm">MED</span>
-            <div class="qname">🏰 Tour de Surveillance</div>
-            <div class="qdesc">Monitoring Grafana + Zabbix. Alertes auto, logs centralisés.</div>
-            <div class="qtags"><span class="qtag">Grafana</span><span class="qtag">Zabbix</span><span
-                class="qtag">SNMP</span></div>
-            <div class="qxp">+ 600 XP ★★☆</div>
-          </div>
-          <div class="qcard"><span class="qdiff dm">MED</span>
-            <div class="qname">🔐 Tunnel Sécurisé</div>
-            <div class="qdesc">VPN site-à-site OpenVPN, PKI, AES-256. Scripts Bash.</div>
-            <div class="qtags"><span class="qtag">OpenVPN</span><span class="qtag">PKI</span><span
-                class="qtag">Bash</span></div>
-            <div class="qxp">+ 500 XP ★★☆</div>
-          </div>
-          <div class="qcard" style="border-style:dashed;opacity:.3;">
-            <div class="qname" style="color:#333;margin-top:20px;">[ QUÊTE À VENIR ]</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-route" class="modal-wrap">
-    <div class="modal" style="border-color:#ffc864;">
-      <div class="mh" style="background:#1a1200;border-color:#ffc864;"><span class="mt" style="color:#ffc864;">🛣️ ROUTE
-          86 — PARCOURS</span><button class="mc" style="color:#ffc864;border-color:#ffc864;"
-          onclick="closeModal('route')">✕ ESC</button></div>
-      <div class="mb">
-        <div class="ph1 y">La Route de l'Aventurier</div>
-        <div class="psub">Chaque kilomètre = une étape franchie.</div>
-        <div class="tl">
-          <div class="tli">
-            <div class="tld"></div>
-            <div class="tly">2022</div>
-            <div class="tlt">🎓 Bac Pro SEN</div>
-            <div class="tltx">Systèmes Électroniques et Numériques. Première découverte des réseaux.</div>
-          </div>
-          <div class="tli">
-            <div class="tld"></div>
-            <div class="tly">2023</div>
-            <div class="tlt">📚 BTS SIO — SISR</div>
-            <div class="tltx">Labos Cisco, Linux serveur, Active Directory.</div>
-          </div>
-          <div class="tli">
-            <div class="tld"></div>
-            <div class="tly">2024</div>
-            <div class="tlt">🏢 Stage Admin Sys</div>
-            <div class="tltx">Gestion parc informatique, déploiement réseau, support N1/N2.</div>
-          </div>
-          <div class="tli">
-            <div class="tld" style="background:#ffc864;box-shadow:0 0 8px #ffc864;"></div>
-            <div class="tly" style="color:#ffc864;">2025 → ∞</div>
-            <div class="tlt" style="color:#ffc864;">⚡ En cours...</div>
-            <div class="tltx">CCNA en préparation. Home lab actif. Cybersécurité et Ansible.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-cabine" class="modal-wrap">
-    <div class="modal" style="border-color:#80d0ff;">
-      <div class="mh" style="background:#081828;border-color:#80d0ff;"><span class="mt" style="color:#80d0ff;">📞 CABINE
-          — CONTACT</span><button class="mc" style="color:#80d0ff;border-color:#80d0ff;"
-          onclick="closeModal('cabine')">✕ ESC</button></div>
-      <div class="mb">
-        <div class="ph1 b">Envoyer un signal</div>
-        <div class="psub">Ligne directe. Réponse &lt; 24h.</div>
-        <div class="crow"><span class="ckey">// EMAIL</span><span class="cval">ton.email@example.com</span></div>
-        <div class="crow"><span class="ckey">// LOCALISATION</span><span class="cval">France — Remote OK</span></div>
-        <div class="crow"><span class="ckey">// STATUT</span><span class="cval" style="color:#4affaa;">● ONLINE</span>
-        </div>
-        <div class="crow" style="border:none;"><span class="ckey">// PING</span><span class="cval"
-            style="color:#ffc864;">2ms ↗</span></div>
-        <div class="clinks">
-          <a href="mailto:ton@email.com" class="clink" style="border-color:#80d0ff;color:#80d0ff;">✉ EMAIL</a>
-          <a href="https://linkedin.com" target="_blank" class="clink" style="border-color:#80d0ff;color:#80d0ff;">in
-            LINKEDIN</a>
-          <a href="https://github.com" target="_blank" class="clink" style="border-color:#80d0ff;color:#80d0ff;">⌥
-            GITHUB</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div id="modal-serveur" class="modal-wrap">
     <div class="modal" style="border-color:#00ff41;background:#020a02;max-width:860px;">
@@ -633,7 +423,7 @@
       for (const z of ZONES) {
         if (inZ(z, e.clientX, e.clientY)) {
           if (z.modal === 'serveur') { openModal('serveur'); }
-          else { window.open(PAGE_MAP[z.modal], '_blank'); }
+          else { window.location.href = PAGE_MAP[z.modal]; }
           return;
         }
       }
@@ -679,7 +469,10 @@
     }));
 
     /* ── NIGHT MODE ── */
-    let nightMode = false;
+    let nightMode = localStorage.getItem('nightMode') === 'true';
+    if (nightMode) {
+      document.getElementById('bg').style.filter = 'brightness(0.55) saturate(0.60) hue-rotate(185deg) contrast(0.95)';
+    }
     const stars = Array.from({ length: 160 }, () => ({
       ix: Math.random() * IMG_W, iy: Math.random() * 280,
       r: Math.random() * 1.8 + 0.5, phase: Math.random() * Math.PI * 2,
@@ -853,11 +646,13 @@
       ],
       night: () => {
         nightMode = true;
+        localStorage.setItem('nightMode', 'true');
         document.getElementById('bg').style.filter = 'brightness(0.55) saturate(0.60) hue-rotate(185deg) contrast(0.95)';
         return ['<span style="color:#aaddff">\ud83c\udf19 Mode nuit activ\u00e9. Tape <b>day</b> pour revenir.</span>'];
       },
       day: () => {
         nightMode = false;
+        localStorage.setItem('nightMode', 'false');
         document.getElementById('bg').style.filter = '';
         return ['<span style="color:#ffc864">\u2600\ufe0f  Mode jour restaur\u00e9.</span>'];
       },
